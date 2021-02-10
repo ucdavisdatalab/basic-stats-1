@@ -1,0 +1,2 @@
+"0","# plot the poisson and chi-squared probability densities"
+"0","plot( x=t, y=dunif(t), bty='n', type='line', main=""Uniform(0, 1) distribution function"")"

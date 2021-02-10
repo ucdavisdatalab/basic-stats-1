@@ -1,0 +1,32 @@
+{
+    "id": "F26042D5",
+    "path": null,
+    "project_path": null,
+    "type": "r_dataframe",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1612990414008.0,
+    "source_on_save": false,
+    "relative_order": 9,
+    "properties": {
+        "expression": "mice_pot",
+        "caption": "mice_pot",
+        "totalObservations": 46,
+        "displayedObservations": 46,
+        "variables": 2,
+        "cacheKey": "808D2F6F",
+        "object": "mice_pot",
+        "environment": "package:fosdata",
+        "contentUrl": "grid_resource/gridviewer.html?env=package%3Afosdata&obj=mice_pot&cache_key=808D2F6F&max_cols=50",
+        "preview": 0
+    },
+    "folds": "",
+    "lastKnownWriteTime": 4805297776,
+    "encoding": "",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1612990414008,
+    "read_only": false,
+    "read_only_alternatives": []
+}

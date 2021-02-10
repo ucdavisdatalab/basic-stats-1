@@ -1,0 +1,1 @@
+"0","plot( x=t, y=dchisq(t, df=2), bty='n', type='line', main=""Chi-squared (df=7) distribution function"")"

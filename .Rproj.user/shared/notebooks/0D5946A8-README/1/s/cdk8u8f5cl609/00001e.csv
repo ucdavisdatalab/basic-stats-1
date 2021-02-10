@@ -1,0 +1,1 @@
+"0","lines(x=c(min(t), qnorm(0.975)), y=rep(0.975, 2), lty=2)"

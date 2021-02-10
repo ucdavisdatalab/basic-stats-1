@@ -1,0 +1,36 @@
+---
+title: Basic statistics in R (part 1)
+author: Wesley Brooks
+date: 11 Feb 2021
+---
+
+# Introduction
+This is the section where I describe the basic contents and purpose of the workshop.
+
+
+## Packages
+If you've ever worked with R, it is likely that you have used *packages*. The package system is what makes R such an incredible language, because it allows anyone to extend the functionality of the language by creating a self-contained module that anybody can load and use in their R session.
+
+Today, I am going to ask you to install and load a few new packages.
+
+```{r}
+install.packages( "remotes" )
+```
+
+Not all packages are on CRAN. It's becoming more common for packages to be shared as repostiories on Github, and so there are some tools that make it simple to install packages that are hosted in this fashion. The `fosdata` package contains 49 datasets that were drawn from open-access journal articles. Here we'll install it from Github, using the `remotes` package. 
+```{r}
+remotes::install_github( "speegled/fosdata" )
+```
+
+You can look at the 
+
+# Probability
+
+
+
+
+## Links
+If there is an interactive component (Jupyter, Etherpad, Binder, etc) then put the link(s) here.
+
+## Background
+A bit more depth than the introduction, and describe the data used and software required, as well as where to download it all.
