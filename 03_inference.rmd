@@ -12,9 +12,6 @@ y = rnorm(50)
 # look at the histogram - it's like the density function
 hist(y)
 
-# look at the empirical distribution function - it's like the distribution function
-plot( ecdf(y) )
-
 # look at the QQ plot - it demonstrates how closely the distribution matches the quantiles of a Normal distribution.
 qqnorm(y)
 
@@ -31,10 +28,6 @@ qqnorm( rt(50, df=2) )
 In the `fosdata` package there is a dataset called `mice_pot`, which contains data from an experiment where mice were dosed with THC and then measured for motor activity as a percentage of their baseline activity. We are going to look at the group that got a medium dose of THC.
 
 ```{r}
-# import the fosdata package and the mice_pot data
-library( 'fosdata' )
-data( mice_pot )
-
 # extract just the mice that got the medium dose of THC
 mice_med = mice_pot[ mice_pot$group == 1, ]
 
@@ -74,10 +67,6 @@ t.test( mice_med$percent_of_act, conf.level=0.8 )
 In the `fosdata` package, there is a dataset called `barnacles` that is from a study where scientists counted the number of barnacles on rocks in the intertidal zone. We'll import the data and look at its distribution:
 
 ```{r}
-# import the fosdata package and the barnacles data
-library( 'fosdata' )
-data( barnacles )
-
 # calculate the number of barnacles per unit area for each sample:
 barnacles$per_m = barnacles$count / barnacles$area_m
 
@@ -115,7 +104,7 @@ for (i in 1:B) {
 # plot the histogram of the bootstrap-t distribution
 hist(t_boot)
 
-# extract the 0.025 and 0.975 wuantiles, and annotate the histogram with them
+# extract the 0.025 and 0.975 quantiles, and annotate the histogram with them
 t_lower = quantile( t_boot, 0.025 )
 t_upper = quantile( t_boot, 0.975 )
 abline( v = c(t_lower, t_upper), lty=3)

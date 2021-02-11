@@ -34,8 +34,8 @@ print( round(x, 2) )
 ```
 
 ```
-##  [1] -1.21  1.05  0.75  0.53  0.76 -0.72  0.31 -0.68  0.05  0.65 -0.15 -0.30
-## [13] -0.07 -0.79 -0.70 -0.48  1.51 -1.87  0.78 -0.91
+##  [1] -1.68  0.94 -1.34  1.46 -0.12  0.66  1.00  1.32  0.49 -0.11 -0.26  1.49
+## [13]  0.66 -1.35 -0.12 -1.04 -0.58 -0.52 -0.38 -1.31
 ```
 
 Do the numbers seem to come from the high-density part of the Normal density curve? Are there any that don't? Most of the samples you've just taken should be It isn't surprising if some of your `x` samples are not particularly close to zero. One out of twenty (that's five percent) samples from a standard Normal population are greater than two or less than negative two, on average. That's "on average" over the population. Your sample may be different.
@@ -93,7 +93,7 @@ mean( x )
 ```
 
 ```
-## [1] -0.07550324
+## [1] -0.03867484
 ```
 
 ```r
@@ -101,7 +101,7 @@ mean( x2 )
 ```
 
 ```
-## [1] -0.07550324
+## [1] -0.03867484
 ```
 
 ```r
@@ -109,27 +109,13 @@ mean( x3 )
 ```
 
 ```
-## [1] -0.2228606
+## [1] -0.2720427
 ```
 
-Because 
+Because `x2` was sampled without replacement, it is exactly the same as `x`, but `x3` was sampled with replacement and has a different mean.
 
 ## Random variables and calculations:
-A random variable is our name for some quantity that follows a random distribution.  Examples:
-
-
-```r
-# X is a random variable, it follows the standard normal distribution
-X = rnorm(1)
-
-# Once we have "realized" a value of X, it is data and no longer random.
-X
-```
-
-```
-## [1] -0.007092514
-```
-
+A random variable is our name for an abstract observation from a population.
 
 ### Mean and median
 There are a few kinds of average that are commonly used in practical settings and we will use two of them extensively. The mean is the average you're probably used to, calculated by summing up the values and then dividing by the number of values. The median is the midpoint of the data - it's the number you arrive at if you write down all the values in order and then find the halfway point. There are special R functions for both of these.
@@ -141,7 +127,7 @@ mean(x)
 ```
 
 ```
-## [1] -0.07550324
+## [1] -0.03867484
 ```
 
 ```r
@@ -149,7 +135,7 @@ median(x)
 ```
 
 ```
-## [1] -0.1091107
+## [1] -0.1189323
 ```
 
 ### Expectation
@@ -170,11 +156,11 @@ print( round( subx_mean, 2 ) )
 ```
 
 ```
-##  [1] -0.13 -0.19  0.17  0.22 -0.37 -0.14  0.12 -0.08 -0.16 -0.37  0.10 -0.29
-## [13]  0.28  0.12 -0.07 -0.15  0.17  0.26  0.02  0.11  0.08 -0.18 -0.11 -0.05
-## [25] -0.14 -0.03  0.02 -0.29 -0.17 -0.10  0.02 -0.01 -0.21  0.13 -0.07  0.21
-## [37] -0.14  0.22  0.15 -0.31 -0.23 -0.27 -0.05 -0.20  0.07 -0.09 -0.27 -0.28
-## [49]  0.39  0.13
+##  [1] -0.18 -0.09 -0.01 -0.05 -0.41 -0.27 -0.20 -0.10 -0.30  0.27 -0.25  0.22
+## [13] -0.17 -0.32 -0.09 -0.34 -0.32 -0.28 -0.05 -0.04 -0.39 -0.20 -0.12 -0.19
+## [25]  0.11 -0.22  0.07 -0.30 -0.06 -0.08 -0.19 -0.14 -0.01  0.16  0.13  0.06
+## [37] -0.14 -0.35  0.13 -0.29  0.21  0.14 -0.44 -0.17 -0.45  0.02  0.01 -0.14
+## [49]  0.25  0.11
 ```
 
 ```r
@@ -182,7 +168,7 @@ mean( subx_mean )
 ```
 
 ```
-## [1] -0.04386732
+## [1] -0.1090708
 ```
 
 ```r
@@ -316,7 +302,7 @@ quantile(y, 0.025)
 
 ```
 ##      2.5% 
-## -2.105757
+## -2.163953
 ```
 
 ```r
@@ -325,7 +311,7 @@ quantile(y, 0.975)
 
 ```
 ##    97.5% 
-## 2.084708
+## 1.985728
 ```
 
 ```r
@@ -335,7 +321,7 @@ quantile(y, c(0.025, 0.975))
 
 ```
 ##      2.5%     97.5% 
-## -2.105757  2.084708
+## -2.163953  1.985728
 ```
 
 ```r
@@ -395,7 +381,7 @@ lines(x=rep(qnorm(0.025), 2), y=c(0, 0.025), lty=3)
 lines(x=rep(qnorm(0.975), 2), y=c(0, 0.975), lty=3)
 ```
 
-<img src="01_probability_files/figure-html/unnamed-chunk-3-1.png" width="672" />
+<img src="01_probability_files/figure-html/unnamed-chunk-2-1.png" width="672" />
 
 If you're working on a vector of numbers rather than a named distribution, then you can use the `mean()` function to calculate what proportion are less than some value:
 
@@ -406,7 +392,7 @@ mean( y <= -2 )
 ```
 
 ```
-## [1] 0.035
+## [1] 0.045
 ```
 
 ```r
@@ -414,7 +400,7 @@ mean( y <= -2 )
 ```
 
 ```
-## [1] 0.03
+## [1] 0.02
 ```
 
 ### Other distributions

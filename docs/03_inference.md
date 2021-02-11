@@ -17,31 +17,24 @@ hist(y)
 <img src="03_inference_files/figure-html/unnamed-chunk-1-1.png" width="672" />
 
 ```r
-# look at the empirical distribution function - it's like the distribution function
-plot( ecdf(y) )
-```
-
-<img src="03_inference_files/figure-html/unnamed-chunk-1-2.png" width="672" />
-
-```r
 # look at the QQ plot - it demonstrates how closely the distribution matches the quantiles of a Normal distribution.
 qqnorm(y)
 ```
 
-<img src="03_inference_files/figure-html/unnamed-chunk-1-3.png" width="672" />
+<img src="03_inference_files/figure-html/unnamed-chunk-1-2.png" width="672" />
 
 ```r
 # plot a couple of non-normal QQ plots:
 qqnorm( rexp(50) )
 ```
 
-<img src="03_inference_files/figure-html/unnamed-chunk-1-4.png" width="672" />
+<img src="03_inference_files/figure-html/unnamed-chunk-1-3.png" width="672" />
 
 ```r
 qqnorm( rt(50, df=2) )
 ```
 
-<img src="03_inference_files/figure-html/unnamed-chunk-1-5.png" width="672" />
+<img src="03_inference_files/figure-html/unnamed-chunk-1-4.png" width="672" />
 
 
 ## Looking at real data
@@ -52,24 +45,6 @@ In the `fosdata` package there is a dataset called `mice_pot`, which contains da
 
 
 ```r
-# import the fosdata package and the mice_pot data
-library( 'fosdata' )
-```
-
-```
-## 
-## Attaching package: 'fosdata'
-```
-
-```
-## The following objects are masked _by_ '.GlobalEnv':
-## 
-##     barnacles, mice_pot
-```
-
-```r
-data( mice_pot )
-
 # extract just the mice that got the medium dose of THC
 mice_med = mice_pot[ mice_pot$group == 1, ]
 
@@ -137,10 +112,6 @@ In the `fosdata` package, there is a dataset called `barnacles` that is from a s
 
 
 ```r
-# import the fosdata package and the barnacles data
-library( 'fosdata' )
-data( barnacles )
-
 # calculate the number of barnacles per unit area for each sample:
 barnacles$per_m = barnacles$count / barnacles$area_m
 
@@ -188,7 +159,7 @@ for (i in 1:B) {
 # plot the histogram of the bootstrap-t distribution
 hist(t_boot)
 
-# extract the 0.025 and 0.975 wuantiles, and annotate the histogram with them
+# extract the 0.025 and 0.975 quantiles, and annotate the histogram with them
 t_lower = quantile( t_boot, 0.025 )
 t_upper = quantile( t_boot, 0.975 )
 abline( v = c(t_lower, t_upper), lty=3)
@@ -203,7 +174,7 @@ print( round( mean(barnacles$per_m) + c(t_lower, t_upper) * sd(barnacles$per_m) 
 
 ```
 ##   2.5%  97.5% 
-## 269.88 389.06
+## 245.49 385.89
 ```
 
 ```r

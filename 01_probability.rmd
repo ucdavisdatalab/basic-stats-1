@@ -68,19 +68,10 @@ mean( x2 )
 mean( x3 )
 ```
 
-Because 
+Because `x2` was sampled without replacement, it is exactly the same as `x`, but `x3` was sampled with replacement and has a different mean.
 
 ## Random variables and calculations:
-A random variable is our name for some quantity that follows a random distribution.  Examples:
-
-```{r}
-# X is a random variable, it follows the standard normal distribution
-X = rnorm(1)
-
-# Once we have "realized" a value of X, it is data and no longer random.
-X
-```
-
+A random variable is our name for an abstract observation from a population.
 
 ### Mean and median
 There are a few kinds of average that are commonly used in practical settings and we will use two of them extensively. The mean is the average you're probably used to, calculated by summing up the values and then dividing by the number of values. The median is the midpoint of the data - it's the number you arrive at if you write down all the values in order and then find the halfway point. There are special R functions for both of these.
