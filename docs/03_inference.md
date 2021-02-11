@@ -41,6 +41,20 @@ In the `fosdata` package there is a dataset called `mice_pot`, which contains da
 ```r
 # import the fosdata package and the mice_pot data
 library( 'fosdata' )
+```
+
+```
+## 
+## Attaching package: 'fosdata'
+```
+
+```
+## The following objects are masked _by_ '.GlobalEnv':
+## 
+##     barnacles, mice_pot
+```
+
+```r
 data( mice_pot )
 
 # extract just the mice that got the medium dose of THC

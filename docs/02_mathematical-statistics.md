@@ -1,73 +1,60 @@
 # Mathematical statistics
-Now, let's look at some of the math that allows us to use manipulate random variables in order to reason about their distributions. Beginning with some important identities that are used constantly when doing algebra with random variables.
+Now, let's look at some of the math that allows us to use manipulate random variables in order to reason about their distributions. Beginning with some important identities that are used constantly when doing algebra with random variables. In particular, we will see how these identities relate to the mean. That's because the mean has some special properties: you've seen how we can calculate intervals based on known distributions that contain samples with a specified frequency. But we need to know the distribution. It turns out that the distribution of the sample mean approaches the Normal distribution as the sample size increases, for almost any independent data. That allows us to create intervals and reason about the distribution of real data, even though the data's distribution is unknown.
 
 
 ## Identities
-The following hold for random variables X and Y that are independent:
+The following hold for random variables $X_1, X_2, \dots$ that are independent:
 
- - $E(aX) = aE(X)$
+ - $E(aX_1) = aE(X_1)$
  
- - $E(X + Y) = E(X) + E(Y)$
+ - $E(X_1 + X_2) = E(X_1) + E(X_2)$
  
- - $var(aX) = a^2 var(X)$
+ - $var(aX) = a^2 var(X_1)$
  
- - $var(X + Y) = var(X) + var(Y)$
+ - $var(X_1 + X_2) = var(X_1) + var(X_2)$
+ 
+ In the case of calculating the mean, $a$ is $1/n$. So if the $X_1, X_2, \dots$ all share the same mean $\mu$ and the same variance $\sigma^2$, then the expectation identities say that the expectation of the mean is
+ $$E[ \frac{1}{n} (X_1 + X_2 + \cdots + X_n) ] = \frac{1}{n} [ E(X_1) + E(X_2) + \cdots + E(X_n) ] \\ = \frac{1}{n} [n \times \mu ] \\
+ =\mu$$
+ 
+ And the variance identities say that the variance of the mean is
+ $$var[ \frac{1}{n} (X_1 + X_2 + \cdots + X_n) ] = \frac{1}{n^2} [ var(X_1) +var(X_2) + \cdots + var(X_n) ] \\
+ = \frac{1}{n^2} [n \times \sigma^2 ] \\
+ =\sigma^2 / n$$
+ 
+ So the mean of a sample of independent random variables has the same expectation as the population but its variance is much smaller. As a result, increasing sample size leads to greater precision in estimating the population mean. Let's take a look at some examples:
+ 
 
 
 ```r
-X = function(n=10, mean=-3, sd=3) { rnorm(n, mean=mean, sd=sd) }
-Y = function(n=10, mean=10, sd=2) { rnorm(n, mean=mean, sd=sd) }
+# create a random variable X with mean -3 and standard deviation 3
+X = function(n=20, mean=-3, sd=3) { rnorm(n, mean=mean, sd=sd) }
 
-mean( X() )
-```
-
-```
-## [1] -3.558318
-```
-
-```r
-mean( Y() )
+# show the histogram of some samples of X as well as the 0.12 and 0.88 quantiles:
+x = X()
+hist( x )
+abline( v=quantile( x, c(0.12, 0.88) ), lty=2 )
 ```
 
-```
-## [1] 9.944947
-```
+<img src="02_mathematical-statistics_files/figure-html/unnamed-chunk-1-1.png" width="672" />
 
 ```r
-var( X() )
+# generate 50 samples of X and calculate their means:
+mean_x = numeric( 50 )
+for (i in 1:50) {
+  mean_x[[ i ]] = mean( X() )
+}
+
+# plot the histogram of mean_x as well as the 0.12 and 0.88 quantiles
+hist( mean_x )
+abline( v=quantile( mean_x, c(0.12, 0.88) ), lty=2 )
 ```
 
-```
-## [1] 2.188199
-```
-
-```r
-var( Y() )
-```
-
-```
-## [1] 4.200803
-```
-
-```r
-var( 2*X() )
-```
-
-```
-## [1] 30.95099
-```
-
-```r
-var( X() + 0.5*Y() )
-```
-
-```
-## [1] 12.58177
-```
+<img src="02_mathematical-statistics_files/figure-html/unnamed-chunk-1-2.png" width="672" />
 
 
 ## Law of large numbers
-The law of large numbers says that if the individual measurements are independent, then the mean of a sample tends toward the mean of the population as the sample size gets larger.
+The law of large numbers says that if the individual measurements are independent, then the mean of a sample tends toward the mean of the population as the sample size gets larger. This is what we'd expect, since we showed the rate at which the variance of the sample mean gets smaller is $1/n$.
 
 
 ```r
@@ -81,7 +68,7 @@ abline(h=0, lty=2)
 
 
 ## Central limit theorem
-The most important mathematical result in statistics, the Central Limit Theorem says that if you take (almost) any sample of random numbers and calculate its mean, the distribution of the mean tends toward a normal distribution. We illustrate the "tending toward" with an arrow and it indicates that the distribution of a sample mean is only *approximately* Normal. But if the samples were from a Normal distribution then the sample mean has an *exactly* Normal distribution.
+The most important mathematical result in statistics, the Central Limit Theorem says that if you take (almost) any sample of random numbers and calculate its mean, the distribution of the mean tends toward a normal distribution. We illustrate the "tending toward" with an arrow and it indicates that the distribution of a sample mean is only *approximately* Normal. But if the original samples were from a Normal distribution then the sample mean has an *exactly* Normal distribution. From here, I'll start writing the mean of a random variable $X$ as $\bar{X}$ and the mean of a sample $x$ as $\bar{x}$.
 
 $$ \bar{X} \rightarrow N(\mu, \frac{\sigma^2}{n}) $$
 And because of the identities we learned before, you can write this as 
@@ -90,11 +77,11 @@ $$\frac{\bar{X} - \mu}{\sigma/\sqrt{n}} \rightarrow N(0, 1) $$
 In fact, the This is significant because we can use the standard normal functions on the right, and the data on the left, to start answering questions like, "what is the 95% confidence interval for the population mean?" 
 
 ### But isn't $\sigma$ unknown, too?
-I've presented calculations that use the parameter $\sigma$. But in reality, $\sigma$ is just as unknown as $\mu$. Is it safe to replace $\sigma$ in the calculations by the standard deviation that we calculate from the sample using the `sd()` function? Not quite. If the $S$, the sample standard deviation (this is what you get from R's `sd()` function) is used for $\sigma$ in the CLT, then the distribution will be slightly less clustered at the central point. This distribution with slightly heavier tails gets called the "t-distribution", and its discovery was a triumph of early modern statistics. 
+I've presented calculations that use the parameter $\sigma$. But in reality, $\sigma$ is just as unknown as $\mu$. Is it safe to replace $\sigma$ in the calculations by the standard deviation that we calculate from the sample using the `sd()` function? Not quite. If the $S$, the sample standard deviation (this is what you get from R's `sd()` function) is used for $\sigma$ in the CLT, then you need to include the uncertainty of estimating $\sigma$ by $S$ in the uncertainty of the distribution. As a result, the distribution will be slightly less clustered at the central point and have "heavy tails". This distribution is called the "t-distribution", and its discovery was a triumph of early modern statistics.
 
 $$\frac{\bar{X} - \mu}{S/\sqrt{n}} \rightarrow t_{n-1} $$
 
-Here the $n-1$ are the "degrees of freedom" of the t-distribution. 
+Here the $n-1$ subscript denotes the "degrees of freedom" of the t-distribution. 
 
 
 
@@ -182,6 +169,12 @@ $$ -1.86 < \frac{\bar{X} - \mu}{S/\sqrt{n}} \le 1.86 $$
 
 Here, $\bar{X}$ and $S$ are random, while $n$ is the known sample size and $\mu$ is the unknown but fixed paramter that we want to put bounds around. Just rearranging terms we can get:
 
-$$ \bar{X} - 1.86 \times S / \sqrt{n} \le \mu < \bar{X} - 1.86 \times S / \sqrt{n} $$
-since this event occurs 90% of the time, we call the interval a 90% confidence interval. to change the confidence level, you would evaluate different quantiles of the t-distribution. If the degrees of freedom are not eight, then you would use the correct number for your data.
+$$ \bar{X} - 1.86 \times S / \sqrt{n} \le \mu < \bar{X} + 1.86 \times S / \sqrt{n} $$
+since this event occurs 90% of the time, we call the interval a 90% confidence interval. To change the confidence level, you would evaluate different quantiles of the t-distribution. If the degrees of freedom are not eight, then you would use the correct number for your data.
+
+### Questions to ponder
+ - Can you see a way to make the confidence interval smaller other than changing the confidence level? Why would that be helpful?
+ - In the formula for a confidence interval, what is random and what is fixed? What would change if you collected new data by repeating the experiment? Does this suggest something about what the 90% means for our 90% confidence interval?
+
+
 
