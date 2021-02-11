@@ -4,8 +4,8 @@ author: [Dr. Wesley Brooks]
 output:
    rmdformats::readthedown
 date: "2021-02-11"
-url: "https://ucdavisdatalab.github.io/adventures_in_data_science/"
-github-repo: ucdavisdatalab/workshop_introduction_to_the_command_line
+url: "https://ucdavisdatalab.github.io/basic_stats_r_1/"
+github-repo: ucdavisdatalab/basic_stats_r_1
 site: bookdown::bookdown_site
 knit: "bookdown::render_book"
 ---
