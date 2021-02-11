@@ -30,6 +30,19 @@ qqnorm(y)
 
 <img src="03_inference_files/figure-html/unnamed-chunk-1-3.png" width="672" />
 
+```r
+# plot a couple of non-normal QQ plots:
+qqnorm( rexp(50) )
+```
+
+<img src="03_inference_files/figure-html/unnamed-chunk-1-4.png" width="672" />
+
+```r
+qqnorm( rt(50, df=2) )
+```
+
+<img src="03_inference_files/figure-html/unnamed-chunk-1-5.png" width="672" />
+
 
 ## Looking at real data
 
@@ -156,6 +169,9 @@ In this case, the observations themselves are not normally distributed so the t-
  2. Repeat the following many times:
   - Resample from the barnacle data with replacement, calling the resample `z`.
   - Calculate the t-statistic (centered at $\bar{x}$) for this resample and call it `t_boot[[i]]`. The formula is `( mean(z) - mean(barnacles$per_m) ) / ( sd(z) / sqrt(n) )`.
+ 3. Get the quantiles from the bootstrap-t distribution.
+ 4. Calculate the confidence interval as 
+ $$ (\bar{x} - t_{boot, lower} \times s / \sqrt{n}, \bar{x} + t_{boot, upper} \times s / \sqrt{n} $$
 
 
 ```r
@@ -163,12 +179,48 @@ In this case, the observations themselves are not normally distributed so the t-
 B = 200
 t_boot = numeric( B )
 
+# generate the bootstrap-t distribution for this data
 for (i in 1:B) {
   z = sample( barnacles$per_m, replace=TRUE )
   t_boot[[i]] = ( mean(z) - mean(barnacles$per_m) ) / ( sd(z) / sqrt(length(z)) )
 }
 
+# plot the histogram of the bootstrap-t distribution
 hist(t_boot)
+
+# extract the 0.025 and 0.975 wuantiles, and annotate the histogram with them
+t_lower = quantile( t_boot, 0.025 )
+t_upper = quantile( t_boot, 0.975 )
+abline( v = c(t_lower, t_upper), lty=3)
 ```
 
 <img src="03_inference_files/figure-html/unnamed-chunk-5-1.png" width="672" />
+
+```r
+# calculate the confidence interval
+print( round( mean(barnacles$per_m) + c(t_lower, t_upper) * sd(barnacles$per_m) / sqrt(length(barnacles$per_m)), 2 ))
+```
+
+```
+##   2.5%  97.5% 
+## 269.88 389.06
+```
+
+```r
+# compare to the result we'd see with a t confidence interval
+t.test( barnacles$per_m )
+```
+
+```
+## 
+## 	One Sample t-test
+## 
+## data:  barnacles$per_m
+## t = 11.397, df = 87, p-value < 2.2e-16
+## alternative hypothesis: true mean is not equal to 0
+## 95 percent confidence interval:
+##  274.1155 389.9216
+## sample estimates:
+## mean of x 
+##  332.0186
+```
