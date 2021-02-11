@@ -1,0 +1,108 @@
+# Inference
+
+Inference means making statements about the population based on a sample. In one simple case, inference can mean using a sample to estimate the mean of the population from which it arose. Since the law of large numbers says that the sample mean tends to the population mean, we'll use the sample mean to approximate the population mean. You've already seen this in the plots where I showed the sample mean getting closer to the population mean as the sample size increased.
+
+## Revisiting the standard normal distribution:
+The distribution, density, and quantile functions are all about the population. When you're working with data, the graphs won't be as clean. When you're using methods that depend upon the data being approximately normal, you'll have to check some diagnostics. One simple but effective approach is to look at the histogram and QQ plot, and judge whether there is obvious non-normality. Here's an example from the standard normal distribution:
+
+```{r}
+# sample 50 numbers from the standard normal distribution
+y = rnorm(50)
+
+# look at the histogram - it's like the density function
+hist(y)
+
+# look at the empirical distribution function - it's like the distribution function
+plot( ecdf(y) )
+
+# look at the QQ plot - it demonstrates how closely the distribution matches the quantiles of a Normal distribution.
+qqnorm(y)
+```
+
+
+## Looking at real data
+
+### Normal data: using the t-distribution
+
+In the `fosdata` package there is a dataset called `mice_pot`, which contains data from an experiment where mice were dosed with THC and then measured for motor activity as a percentage of their baseline activity. We are going to look at the group that got a medium dose of THC.
+
+```{r}
+# import the fosdata package and the mice_pot data
+library( 'fosdata' )
+data( mice_pot )
+
+# extract just the mice that got the medium dose of THC
+mice_med = mice_pot[ mice_pot$group == 1, ]
+
+# look at the histogram and QQ plot to assess whether the data are approximately normal
+hist( mice_med$percent_of_act )
+qqnorm( mice_med$percent_of_act )
+```
+
+#### Find the 80% confidence interval for the population mean
+
+Now we are using our sample to make some determination about the population, so this is statistical inference. Our best guess of the population mean is the sample mean, `mean( mice_med$percent_of_act )`, which is 99.1%. But to get a confidence interval, we need to use the formula
+$$ \bar{x} \pm t_{n-1, 0.1} * S / \sqrt{n} $$
+Going piece-by-piece in this formula:
+
+```{r}
+# calculate the sample mean, sample standard deviation, and sample size:
+x_bar = mean( mice_med$percent_of_act )
+s = sd( mice_med$percent_of_act )
+n = nrow( mice_med )
+
+# calculate the relevant quantiles of the t-distribution.
+# use the 0.1 and 0.9 quantiles because we want the 80% confidence interval
+# and (1-0.8) / 2 = 0.1 and 1 - 0.1 = 0.9.
+t_low = qt(0.1, df=n-1)
+t_high = qt(0.9, df=n-1)
+
+# calculate the confidence interval:
+cat( "The 80% CI is (", x_bar + t_low * s / sqrt(n), ", ", x_bar + t_high * s / sqrt(n), ").")
+
+# check your calculation with the t.test function:
+t.test( mice_med$percent_of_act, conf.level=0.8 )
+
+```
+
+### Non-normal data: resampling
+
+In the `fosdata` package, there is a dataset called `barnacles` that is from a study where scientists counted the number of barnacles on rocks in the intertidal zone. We'll import the data and look at its distribution:
+
+```{r}
+# import the fosdata package and the barnacles data
+library( 'fosdata' )
+data( barnacles )
+
+# calculate the number of barnacles per unit area for each sample:
+barnacles$per_m = barnacles$count / barnacles$area_m
+
+# examine the histogram and QQ plot of the barnacles per unit area:
+hist( barnacles$per_m, main="barnacles per square meter" )
+qqnorm( barnacles$per_m )
+
+# does it look to you like the barnacles per unit area are distributed like a normal distribution?
+```
+
+We should conclude that the data are obviously non-normal.
+
+#### Bootstrap-t distribution:
+In this case, the observations themselves are not normally distributed so the t-distribution derived from the CLT will be only an approximation. But there is another option: resampling. This means shuffling our original data to generate new values of the t-statistic, and then working directly from this "bootstrap-t" distribution for inferences. Here is the procedure for generating your bootstrap-t distribution:
+
+ 1. Compute the sample mean $\bar{x}$.
+ 2. Repeat the following many times:
+  - Resample from the barnacle data with replacement, calling the resample `z`.
+  - Calculate the t-statistic (centered at $\bar{x}$) for this resample and call it `t_boot[[i]]`. The formula is `( mean(z) - mean(barnacles$per_m) ) / ( sd(z) / sqrt(n) )`.
+
+```{r}
+# define the sample size and a 
+B = 200
+t_boot = numeric( B )
+
+for (i in 1:B) {
+  z = sample( barnacles$per_m, replace=TRUE )
+  t_boot[[i]] = ( mean(z) - mean(barnacles$per_m) ) / ( sd(z) / sqrt(length(z)) )
+}
+
+hist(t_boot)
+```

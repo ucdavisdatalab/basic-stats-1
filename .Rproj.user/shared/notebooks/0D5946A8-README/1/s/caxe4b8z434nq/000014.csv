@@ -1,3 +1,0 @@
-"0","# plot the densities of a standard normal distribution, and of a t-distribution with five degrees of freedom:"
-"0",""
-"0","plot( x=t, y=dnorm(t), ylim=c(0, 0.5), bty='n', lty=2, type='l', ylab=""density"" )"

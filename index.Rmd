@@ -1,0 +1,24 @@
+---
+title: Introduction to basic statistics with R
+author: [Dr. Wesley Brooks]
+output:
+   rmdformats::readthedown
+date: "2021-02-11"
+url: "https://ucdavisdatalab.github.io/adventures_in_data_science/"
+github-repo: ucdavisdatalab/workshop_introduction_to_the_command_line
+site: bookdown::bookdown_site
+knit: "bookdown::render_book"
+---
+
+```{r, echo=FALSE}
+url1 <- "add the url path here for any images"
+library(knitr)
+```
+
+![](img/datalab-logo-full-color-rgb.png)
+
+# Overview
+
+This workshop led by UC Davis' Data Feminism research and learning cluster unpacks the subjective process of data visualization and its relationship to concepts of diversity, equity and inclusion. We’ll critically explore how data can be used to uphold and perpetuate, or quantify and demonstrate structural oppression. Through this workshop learners will practice the technique of “data visceralization,” the process of experiencing differences in data and understanding them viscerally.
+
+
