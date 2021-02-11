@@ -1,17 +1,65 @@
-# Mathematical statistics
-Now, let's look at some of the math that allows us to use manipulate random variables in order to reason about their distributions. Beginning with some important identities that are used constantly when doing algebra with random variables.
+---
+title: Introduction to basic statistics with R
+author: [Dr. Wesley Brooks]
+output:
+   rmdformats::readthedown
+date: "2021-02-11"
+url: "https://ucdavisdatalab.github.io/adventures_in_data_science/"
+github-repo: ucdavisdatalab/workshop_introduction_to_the_command_line
+site: bookdown::bookdown_site
+knit: "bookdown::render_book"
+---
 
+# Overview
+
+Placeholder
+
+
+## `mice_pot` dataset
+## `barnacles` dataset
+## Sample and population
+
+<!--chapter:end:index.Rmd-->
+
+
+# Probability
+
+Placeholder
+
+
+## Random variables and calculations:
+### Mean and median
+### Expectation
+### Variance
+### Some identities
+## Some distributions
+### Normal distribution
+#### Distribution function
+#### Density function
+#### Quantile function
+### Identities
+### Law of large numbers
+### Central limit theorem
+#### But isn't $\sigma$ unknown, too?
+## Revisiting the standard normal distribution:
+## Looking at real data
+### Normal data: using the t-distribution
+#### Find the 80% confidence interval for the population mean
+### Non-normal data: resampling
+#### Bootstrap-t distribution:
+## Links
+## Background
+
+<!--chapter:end:01_probability.rmd-->
+
+# Mathematical statistics
 
 ## Identities
-The following hold for random variables X and Y that are independent:
-
- - $E(aX) = aE(X)$
- 
- - $E(X + Y) = E(X) + E(Y)$
- 
- - $var(aX) = a^2 var(X)$
- 
- - $var(X + Y) = var(X) + var(Y)$
+For random variables X and Y that are independent,
+ - $$E(aX) = aE(X)$$
+ - $$E(X + Y) = E(X) + E(Y)$$
+ - $$var(aX) = a^2 var(X)$$
+ - $$var(X + Y) = var(X) + var(Y)$$
 
 ```{r}
 X = function(n=10, mean=-3, sd=3) { rnorm(n, mean=mean, sd=sd) }
@@ -53,13 +101,9 @@ I've presented calculations that use the parameter $\sigma$. But in reality, $\s
 
 $$\frac{\bar{X} - \mu}{S/\sqrt{n}} \rightarrow t_{n-1} $$
 
-Here the $n-1$ are the "degrees of freedom" of the t-distribution. 
-
-
 ```{r}
 # plot the densities of a standard normal distribution, and of a t-distribution with five degrees of freedom:
-t = seq(-4, 4, length.out=1001)
-  
+
 plot( x=t, y=dnorm(t), ylim=c(0, 0.5), bty='n', lty=2, type='l', ylab="density" )
 par( new=TRUE )
 plot( x=t, y=dt(t, df=5), ylim=c(0, 0.5), xaxt='n', yaxt='n', xlab='', ylab='', bty='n', col='red', type='l' )
@@ -87,33 +131,52 @@ hist(uu)
 # what happens as B and N get larger and smaller? Do they play different roles?
 ```
 
-## Events and intervals
-Answering realistic statistical questions is often a matter of evaluating the probability of some event. 
+<!--chapter:end:02_mathematical-statistics.rmd-->
 
-Given a t-distribution with eight degrees of freedom, the probability of sampling a number randomly from the distribution which is less than -1 is found from the distribution function:
 
-```{r t-probability}
-pt(-1, df=8)
-```
+# Inference
 
-For that same distribution, if you want to know the value which is exceeded by 12% of samples, then you would use the quantile function:
+Placeholder
 
-```{r t-quantile}
-qt( 1 - 0.12, df=8 )
-```
 
-Again using the same distribution, you can evaluate the interval where 90% of samples are within the interval. 
+## Revisiting the standard normal distribution:
+## Looking at real data
+### Normal data: using the t-distribution
+#### Find the 80% confidence interval for the population mean
+### Non-normal data: resampling
+#### Bootstrap-t distribution:
 
-```{r t-interval}
-qt( c(0.05, 0.95), df=8 )
-```
+<!--chapter:end:03_inference.rmd-->
 
-But if that $t_8$ random variable is the result of a calculation like $\frac{\bar{X} - \mu}{S/\sqrt{n}}$, then the event that it is in the interval (-1.86, 1.86) is the event
 
-$$ -1.86 < \frac{\bar{X} - \mu}{S/\sqrt{n}} \le 1.86 $$
+# Introduction
 
-Here, $\bar{X}$ and $S$ are random, while $n$ is the known sample size and $\mu$ is the unknown but fixed paramter that we want to put bounds around. Just rearranging terms we can get:
+Placeholder
 
-$$ \bar{X} - 1.86 \times S / \sqrt{n} \le \mu < \bar{X} - 1.86 \times S / \sqrt{n} $$
-since this event occurs 90% of the time, we call the interval a 90% confidence interval. to change the confidence level, you would evaluate different quantiles of the t-distribution. If the degrees of freedom are not eight, then you would use the correct number for your data.
+
+## Packages
+## Random variables and calculations:
+### Mean and median
+### Expectation
+### Variance
+### Some identities
+## Some distributions
+### Normal distribution
+#### Distribution function
+#### Density function
+#### Quantile function
+### Identities
+### Law of large numbers
+### Central limit theorem
+#### But isn't $\sigma$ unknown, too?
+## Revisiting the standard normal distribution:
+## Looking at real data
+### Normal data: using the t-distribution
+#### Find the 80% confidence interval for the population mean
+### Non-normal data: resampling
+#### Bootstrap-t distribution:
+## Links
+## Background
+
+<!--chapter:end:README.rmd-->
 

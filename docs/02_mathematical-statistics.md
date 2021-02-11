@@ -13,30 +13,71 @@ The following hold for random variables X and Y that are independent:
  
  - $var(X + Y) = var(X) + var(Y)$
 
-```{r}
+
+```r
 X = function(n=10, mean=-3, sd=3) { rnorm(n, mean=mean, sd=sd) }
 Y = function(n=10, mean=10, sd=2) { rnorm(n, mean=mean, sd=sd) }
 
 mean( X() )
+```
+
+```
+## [1] -2.055735
+```
+
+```r
 mean( Y() )
+```
 
+```
+## [1] 10.67295
+```
+
+```r
 var( X() )
-var( Y() )
+```
 
+```
+## [1] 9.311326
+```
+
+```r
+var( Y() )
+```
+
+```
+## [1] 3.246806
+```
+
+```r
 var( 2*X() )
+```
+
+```
+## [1] 8.859847
+```
+
+```r
 var( X() + 0.5*Y() )
+```
+
+```
+## [1] 5.871282
 ```
 
 
 ## Law of large numbers
 The law of large numbers says that if the individual measurements are independent, then the mean of a sample tends toward the mean of the population as the sample size gets larger.
 
-```{r}
+
+```r
 nn = c(1, 2, 4, 8, 12, 20, 33, 45, 66, 100)
 means = sapply( nn, function(n) mean( rnorm(n) ) )
 plot(nn, means, bty='n', ylab = "sample mean")
 abline(h=0, lty=2)
 ```
+
+<img src="02_mathematical-statistics_files/figure-html/unnamed-chunk-2-1.png" width="672" />
 
 
 ## Central limit theorem
@@ -56,7 +97,8 @@ $$\frac{\bar{X} - \mu}{S/\sqrt{n}} \rightarrow t_{n-1} $$
 Here the $n-1$ are the "degrees of freedom" of the t-distribution. 
 
 
-```{r}
+
+```r
 # plot the densities of a standard normal distribution, and of a t-distribution with five degrees of freedom:
 t = seq(-4, 4, length.out=1001)
   
@@ -65,16 +107,23 @@ par( new=TRUE )
 plot( x=t, y=dt(t, df=5), ylim=c(0, 0.5), xaxt='n', yaxt='n', xlab='', ylab='', bty='n', col='red', type='l' )
 ```
 
+<img src="02_mathematical-statistics_files/figure-html/unnamed-chunk-3-1.png" width="672" />
+
 Once again, if the original samples were from a Normal distribution, then the distribution of the mean is exactly a $t$ distribution, but otherwie the $t$ distribution is an approximation that gets better as the sample size increases.
 
 What's more important than memorizing the precise formula is to remember that for (almost) any data where the samples are independent, the mean comes from some distribution that is more and more like the Normal distribution as the sample size increases. Let's take a look at an example using the uniform distribution.
 
-```{r}
+
+```r
 # generate 20 samples from a uniform distribution and plot their histogram
 N = 20
 u = runif( N )
 hist( u )
+```
 
+<img src="02_mathematical-statistics_files/figure-html/unnamed-chunk-4-1.png" width="672" />
+
+```r
 # generate 100 repeated samples of the same size, calculate the mean of each one, and plot the histogram of the means.
 B = 100
 uu = numeric( B )
@@ -83,7 +132,11 @@ for ( i in 1:B ) {
 }
 
 hist(uu)
+```
 
+<img src="02_mathematical-statistics_files/figure-html/unnamed-chunk-4-2.png" width="672" />
+
+```r
 # what happens as B and N get larger and smaller? Do they play different roles?
 ```
 
@@ -92,20 +145,35 @@ Answering realistic statistical questions is often a matter of evaluating the pr
 
 Given a t-distribution with eight degrees of freedom, the probability of sampling a number randomly from the distribution which is less than -1 is found from the distribution function:
 
-```{r t-probability}
+
+```r
 pt(-1, df=8)
+```
+
+```
+## [1] 0.1732968
 ```
 
 For that same distribution, if you want to know the value which is exceeded by 12% of samples, then you would use the quantile function:
 
-```{r t-quantile}
+
+```r
 qt( 1 - 0.12, df=8 )
+```
+
+```
+## [1] 1.26934
 ```
 
 Again using the same distribution, you can evaluate the interval where 90% of samples are within the interval. 
 
-```{r t-interval}
+
+```r
 qt( c(0.05, 0.95), df=8 )
+```
+
+```
+## [1] -1.859548  1.859548
 ```
 
 But if that $t_8$ random variable is the result of a calculation like $\frac{\bar{X} - \mu}{S/\sqrt{n}}$, then the event that it is in the interval (-1.86, 1.86) is the event
