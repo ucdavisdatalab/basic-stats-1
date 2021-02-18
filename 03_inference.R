@@ -6,7 +6,7 @@ y = rnorm(50)
 hist(y)
 
 # look at the QQ plot - it demonstrates how closely the distribution matches the quantiles of a Normal distribution.
-qqnorm(y)
+qqnorm( rnorm( 50) )
 
 # plot a couple of non-normal QQ plots:
 qqnorm( rexp(50) )

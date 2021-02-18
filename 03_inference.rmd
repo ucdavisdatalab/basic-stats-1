@@ -115,3 +115,69 @@ print( round( mean(barnacles$per_m) + c(t_lower, t_upper) * sd(barnacles$per_m) 
 # compare to the result we'd see with a t confidence interval
 t.test( barnacles$per_m )
 ```
+
+## Hypothesis testing
+We've seen how to generate some confidence intervals for locating the population mean based on a sample. Besides confidence intervals, another main topic of statistical inference is hypothesis testing.
+
+### Null hypothesis and p-value
+Recall that in statistical inference, we are using some sample to make conclusions about a population. The sample can't tell us what the population is, since many different populations could generate the same samples. But if we have a sample and a particular idea for a population, then we can see whether the sample is unlikely, given the proposed population.
+
+When testing a hypothesis in statistics, you propose some specific hypothesis, called the null hypothesis. Then, you must evaluate how unusual the data are, given the assumption that the null hypothesis is true. As an example, let's test whether the mice that got a medium dose of THC have population mean activity that is equal to 100. Call this specific null mean $\mu_0$. Then the t-statistic for the test is
+
+$$t = \frac{\bar{X} - \mu_0}{S / \sqrt{n} } = \frac{99.05 - 100}{S / \sqrt{12} } = -0.125$$
+
+When working out the confidence interval, we already saw that these data are Normally distributed and the t-statistic for these data has 11 degrees of freedom. I will therefore draw the density of a t-distribution with 11 degrees of freedom, annotated with the observed t-statistic:
+
+```{r one-pop-t}
+# plot the t density with 11 df
+xx = seq(-4, 4, length.out=1000)
+plot( xx, dt(xx, df=11), type='l', bty='n', ylab="density", xlab='t')
+
+# annotate with the observed t-statistic
+t = (mean(mice_med$percent_of_act) - 100) /
+  (sd(mice_med$percent_of_act) / sqrt(n))
+abline(v=t, lty=3, col='red', lwd=2)
+```
+
+
+The observed t-statistic doesn't appear to be unusual under the assumed null, because it is from the fat part of the probability density. We can quantify that idea by shading the area under the density curve that is more rare than the observed t-statistic. The area of that shading is the probability that something equally or more unlikely than the observed data would occur if the null hypothesis is true. This gets called the p-value, and when it is small, we conclude that the null hypothesis should be rejected. 
+
+```{r one-pop-t-pval}
+# plot the t density with 11 df
+xx = seq(-4, 4, length.out=1000)
+plot( xx, dt(xx, df=11), type='l', bty='n', ylab="density", xlab='t')
+
+# annotate with the observed t-statistic
+abline(v=t, lty=3, col='red', lwd=2)
+
+# shade the tails
+polygon(x=c(xx[xx<=t], t, min(xx)), y=c(dt(xx[xx<=t], df=11), 0, 0), col=grey(0.8))
+polygon(x=c(xx[xx>-t], t, max(xx)), y=c(0, dt(xx[xx>-t], df=11), 0), col=grey(0.8))
+```
+
+Here, clearly, the shaded area is not small, so don't reject the null hypothesis. This can be done more simply with the t.test function:
+
+```{r t.test-fun}
+# test whether the population mean movement is equal to 100%]
+t.test( mice_med$percent_of_act, mu=100 )
+```
+
+### Two-population test
+The test I just described is a one-population test because it seeks to compare a single population against a specified standard. On the other hand, you may wish to assess the null hypothesis that the movement of mice in the high-THC group is equal to the movement of mice in the medium-THC group. This is called a two-population test, since there are two populations to compare against each other.
+
+```{r two-pop-t.test}
+#extract the samples to be compared
+a = mice_pot$percent_of_act[ mice_pot$group == 1]
+b = mice_pot$percent_of_act[ mice_pot$group == 3]
+
+# check for equal variances - these are close enough
+var(a)
+var(b)
+
+# check whether the high-THC mice movement is Normal
+qqnorm(b)
+
+# two pop test
+t.test(a, b, var.equal=TRUE)
+```
+
