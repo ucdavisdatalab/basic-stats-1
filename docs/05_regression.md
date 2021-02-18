@@ -342,14 +342,19 @@ with( adipose, plot(waist_cm, sqrt(vat), bty='n') )
 # plot the fitted regression line
 abline( coef(fit_sqrt)[[1]], coef(fit_sqrt)[[2]], col='red' )
 
+# define some waist measurements where we'll construct confidence intervals
 pred_pts = data.frame( waist_cm = c(70, 85, 110) )
 
+# calculate the 90% CI at each of the pred_pts
 ff = predict(fit_sqrt, pred_pts, interval="confidence", level=0.9)
 pp = predict(fit_sqrt, pred_pts, interval="prediction", level=0.9)
 
+# convert the confidence intervals to data.frames
 ff = as.data.frame(ff)
 pp = as.data.frame(pp)
 
+# add the three confidence intervals to the plots
+# (offset them a bit for clarity in the plot)
 for (i in 1:3) {
   lines( x=rep( pred_pts$waist_cm[[i]] - 0.5, 2),
         y=c( ff$lwr[[i]], ff$upr[[i]] ), col='blue', lwd=2 )
@@ -358,6 +363,7 @@ for (i in 1:3) {
         y=c( pp$lwr[[i]], pp$upr[[i]] ), col='orange', lwd=2 )
 }
 
+# add a legend
 legend(c("90% CI (fitted values)", "90% CI (predicted values)"),
        x="topleft", lwd=2, col=c("blue", "orange"), bty='n')
 ```

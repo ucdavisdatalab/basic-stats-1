@@ -48,7 +48,7 @@ In the `fosdata` package there is a dataset called `mice_pot`, which contains da
 # extract just the mice that got the medium dose of THC
 mice_med = mice_pot[ mice_pot$group == 1, ]
 
-# look at the histogram and QQ plot to assess whether the data are approximately normal
+# assess normality with histogram and QQ plot
 hist( mice_med$percent_of_act )
 ```
 
@@ -68,19 +68,20 @@ Going piece-by-piece in this formula:
 
 
 ```r
-# calculate the sample mean, sample standard deviation, and sample size:
+# calculate the sample mean, standard deviation, and sample size:
 x_bar = mean( mice_med$percent_of_act )
 s = sd( mice_med$percent_of_act )
 n = nrow( mice_med )
 
 # calculate the relevant quantiles of the t-distribution.
-# use the 0.1 and 0.9 quantiles because we want the 80% confidence interval
+# use the 0.1 and 0.9 quantiles because we want the 80% CI
 # and (1-0.8) / 2 = 0.1 and 1 - 0.1 = 0.9.
 t_low = qt(0.1, df=n-1)
 t_high = qt(0.9, df=n-1)
 
 # calculate the confidence interval:
-cat( "The 80% CI is (", x_bar + t_low * s / sqrt(n), ", ", x_bar + t_high * s / sqrt(n), ").")
+cat( "The 80% CI is (", x_bar + t_low * s / sqrt(n), ", ",
+     x_bar + t_high * s / sqrt(n), ").")
 ```
 
 ```
@@ -128,7 +129,8 @@ qqnorm( barnacles$per_m )
 <img src="03_inference_files/figure-html/unnamed-chunk-4-2.png" width="672" />
 
 ```r
-# does it look to you like the barnacles per unit area are distributed like a normal distribution?
+# does it look like the barnacles per unit area
+# are distributed like a normal distribution?
 ```
 
 We should conclude that the data are obviously non-normal.
@@ -146,20 +148,21 @@ In this case, the observations themselves are not normally distributed so the t-
 
 
 ```r
-# define the sample size and a 
-B = 200
+# define the sample size and a vector to hold results
+B = 1000
 t_boot = numeric( B )
 
 # generate the bootstrap-t distribution for this data
 for (i in 1:B) {
   z = sample( barnacles$per_m, replace=TRUE )
-  t_boot[[i]] = ( mean(z) - mean(barnacles$per_m) ) / ( sd(z) / sqrt(length(z)) )
+  t_boot[[i]] = ( mean(z) - mean(barnacles$per_m) ) /
+    ( sd(z) / sqrt(length(z)) )
 }
 
 # plot the histogram of the bootstrap-t distribution
 hist(t_boot)
 
-# extract the 0.025 and 0.975 quantiles, and annotate the histogram with them
+# annotate the histogram with 0.025 and 0.975 quantiles
 t_lower = quantile( t_boot, 0.025 )
 t_upper = quantile( t_boot, 0.975 )
 abline( v = c(t_lower, t_upper), lty=3)
@@ -169,12 +172,14 @@ abline( v = c(t_lower, t_upper), lty=3)
 
 ```r
 # calculate the confidence interval
-print( round( mean(barnacles$per_m) + c(t_lower, t_upper) * sd(barnacles$per_m) / sqrt(length(barnacles$per_m)), 2 ))
+round( mean(barnacles$per_m) + 
+        c(t_lower, t_upper) * sd(barnacles$per_m) / 
+        sqrt(length(barnacles$per_m)), 2 )
 ```
 
 ```
 ##   2.5%  97.5% 
-## 243.29 381.87
+## 263.52 380.29
 ```
 
 ```r
@@ -223,7 +228,7 @@ abline(v=t, lty=3, col='red', lwd=2)
 <img src="03_inference_files/figure-html/one-pop-t-1.png" width="672" />
 
 
-The observed t-statistic doesn't appear to be unusual under the assumed null, because it is from the fat part of the probability density. We can quantify that idea by shading the area under the density curve that is more rare than the observed t-statistic. The area of that shading is the probability that something equally or more unlikely than the observed data would occur if the null hypothesis is true. This gets called the p-value, and when it is small, we conclude that the null hypothesis should be rejected. 
+The observed t-statistic doesn't appear to be unusual under the assumed null, because it is from the fat part of the probability density. We can quantify that idea by shading the area under the density curve that is more rare than the observed t-statistic. The area of that shading is the probability that something equally or more unlikely than the observed data would occur if the null hypothesis is true. This gets called the p-value, and when it is small, we conclude that the null hypothesis should be rejected.
 
 
 ```r
@@ -241,11 +246,11 @@ polygon(x=c(xx[xx>-t], t, max(xx)), y=c(0, dt(xx[xx>-t], df=11), 0), col=grey(0.
 
 <img src="03_inference_files/figure-html/one-pop-t-pval-1.png" width="672" />
 
-Here, clearly, the shaded area is not small, so don't reject the null hypothesis. This can be done more simply with the t.test function:
+Here, clearly, the shaded area is not small, so don't reject the null hypothesis. In the plot, I have shaded both the upper and lower tails. That's because the null hypothesis was not specific about whether the alternative is $\mu \ne 100$ or $\mu < 100$. If you wish, you may formulate a one-sided hypothesis (this needs to be done before looking at the data). As you may imagine, the shaded area is reduced if you take away one of the two tails and this makes it easier to reject a one-sided null hypothesis. The test can be done more simply with the t.test function:
 
 
 ```r
-# test whether the population mean movement is equal to 100%]
+# test whether the population mean movement is equal to 100%
 t.test( mice_med$percent_of_act, mu=100 )
 ```
 
@@ -263,8 +268,27 @@ t.test( mice_med$percent_of_act, mu=100 )
 ##  99.05235
 ```
 
+```r
+# same test, but one-sided
+t.test( mice_med$percent_of_act, mu=100, alternative='less')
+```
+
+```
+## 
+## 	One Sample t-test
+## 
+## data:  mice_med$percent_of_act
+## t = -0.12502, df = 11, p-value = 0.4514
+## alternative hypothesis: true mean is less than 100
+## 95 percent confidence interval:
+##      -Inf 112.6651
+## sample estimates:
+## mean of x 
+##  99.05235
+```
+
 ### Two-population test
-The test I just described is a one-population test because it seeks to compare a single population against a specified standard. On the other hand, you may wish to assess the null hypothesis that the movement of mice in the high-THC group is equal to the movement of mice in the medium-THC group. This is called a two-population test, since there are two populations to compare against each other.
+The test of $\mu_0 = 100$ is a one-population test because it seeks to compare a single population against a specified standard. On the other hand, you may wish to assess the null hypothesis that the movement of mice in the high-THC group is equal to the movement of mice in the medium-THC group. This is called a two-population test, since there are two populations to compare against each other. The null hypothesis is $\mu_{0, med} = \mu_{0, high}$. Testing a two-population hypothesis requires first assessing normality and also checking whether the variances are equal. There are separate procedures when the variances are equal vs. unequal.
 
 
 ```r
@@ -289,11 +313,19 @@ var(b)
 ```
 
 ```r
-# check whether the high-THC mice movement is Normal
-qqnorm(b)
+# confirm equal variances with a boxplot
+boxplot(a, b)
 ```
 
 <img src="03_inference_files/figure-html/two-pop-t.test-1.png" width="672" />
+
+```r
+# check whether the high-THC mice movement is Normal
+# (we already checked for the medium-dose mice)
+qqnorm(b)
+```
+
+<img src="03_inference_files/figure-html/two-pop-t.test-2.png" width="672" />
 
 ```r
 # two pop test
@@ -313,4 +345,57 @@ t.test(a, b, var.equal=TRUE)
 ## mean of x mean of y 
 ##  99.05235  70.66787
 ```
+
+As a side note, what counts as "equal" variance is a judgement call. I might say that variances within a factor of two are roughly equal. Here's an example of unequal variances, which is clearly discernable from the boxplot:
+
+
+```r
+# import the mtcars data
+data(mtcars)
+
+# make a boxplot of mpg by cylinder count
+boxplot( mpg ~ cyl, data=mtcars)
+```
+
+<img src="03_inference_files/figure-html/cars-unequal-variances-1.png" width="672" />
+
+The variances of mpg for the si and eight cylinder cars are approximately equal to each other, but they are different from the variance of the mpg of four-cylinder cars.
+
+### Hypothesis tests for non-normal data
+Just as with the confidence intervals, there is a bootstrap hypothesis test that can be used where the data are not normal. There are other options, too, with clever derivations. The one I'll show you is the Wilcoxon test, which is based on the ranks of the data.
+
+Since we'e already seen that the barnacles per square meter data are not normal, I will illustrate testing the null hypothesis that $\mu_0$ = 300 barnacles per square meter. This is a one-population test, and a two-sided alternative.
+
+
+```r
+# wilcoxon test for 300 barnacles per square meter
+wilcox.test( barnacles$per_m )
+```
+
+```
+## 
+## 	Wilcoxon signed rank test with continuity correction
+## 
+## data:  barnacles$per_m
+## V = 3916, p-value = 3.797e-16
+## alternative hypothesis: true location is not equal to 0
+```
+
+The same function can also be used for two-population testing, like the example of the medium vs. high THC doses:
+
+
+```r
+# wilcoxon test of equality between high-THC and medium-THC mice
+wilcox.test( a, b )
+```
+
+```
+## 
+## 	Wilcoxon rank sum exact test
+## 
+## data:  a and b
+## W = 94, p-value = 0.02492
+## alternative hypothesis: true location shift is not equal to 0
+```
+
 
